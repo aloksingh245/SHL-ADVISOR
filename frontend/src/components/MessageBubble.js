@@ -10,7 +10,11 @@ const MessageBubble = ({ message }) => {
       <div className={`message message-${role}`}>
         <ReactMarkdown 
           components={{
-            a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" />
+            a: ({node, children, ...props}) => (
+              <a {...props} target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            )
           }}
         >
           {content}

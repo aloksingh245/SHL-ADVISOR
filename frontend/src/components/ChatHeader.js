@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash2, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 const ChatHeader = ({ onClear }) => (
   <header className="header">
