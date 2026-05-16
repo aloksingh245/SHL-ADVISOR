@@ -4,6 +4,7 @@ pydantic>=2.4.2
 pydantic-settings>=2.0.3
 httpx>=0.25.0
 chromadb>=0.4.15
+pysqlite3-binary
 google-generativeai>=0.3.0
 litellm>=1.0.0
 python-dotenv>=1.0.0

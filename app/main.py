@@ -1,3 +1,19 @@
+import logging
+import traceback
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+try:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    logger.info("Successfully injected pysqlite3")
+except ImportError:
+    logger.info("pysqlite3 not found, using system sqlite3")
+except Exception as e:
+    logger.error(f"Error injecting pysqlite3: {e}")
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import logging
