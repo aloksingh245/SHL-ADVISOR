@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from typing import List, Dict, Any
 import chromadb
+import os
 from chromadb.utils import embedding_functions
 from app.models.catalog import Assessment
 
@@ -14,10 +15,14 @@ class RetrievalEngine:
         self.db_path = Path(db_path)
         self.client = chromadb.PersistentClient(path=str(self.db_path))
         
-        # We use a standard sentence transformer model for embeddings
-        self.embedding_function = embedding_functions.DefaultEmbeddingFunction()
+        # Use Google Gemini Embeddings to save memory on Render
+        api_key = os.getenv("GEMINI_API_KEY")
+        self.embedding_function = embedding_functions.GoogleGenerativeAIEmbeddingFunction(
+            api_key=api_key,
+            model_name="models/text-embedding-004"
+        )
         
-        self.collection_name = "shl_assessments"
+        self.collection_name = "shl_assessments_gemini" # New collection for different embedding space
         
         # Try to get the collection, if it doesn't exist, create and populate it
         try:
