@@ -109,12 +109,15 @@ class RetrievalEngine:
             ids.append(f"assessment_{i}")
 
         if documents:
-            # Batch process to avoid large payload errors if necessary, but 377 should be fine
-            self.collection.add(
-                documents=documents,
-                metadatas=metadatas,
-                ids=ids
-            )
+            batch_size = 100
+            for i in range(0, len(documents), batch_size):
+                end = min(i + batch_size, len(documents))
+                logger.info(f"Adding batch {i//batch_size + 1}: items {i} to {end}")
+                self.collection.add(
+                    documents=documents[i:end],
+                    metadatas=metadatas[i:end],
+                    ids=ids[i:end]
+                )
             logger.info(f"Successfully populated collection with {len(documents)} assessments.")
 
     def search(self, query: str, top_k: int = 5, filter_dict: Dict[str, Any] = None) -> List[Dict[str, Any]]:
