@@ -1,0 +1,9 @@
+.env
+venv/
+__pycache__/
+.DS_Store
+uvicorn.log
+data/chroma_db/
+node_modules/
+**/node_modules/
+**/__pycache__/
