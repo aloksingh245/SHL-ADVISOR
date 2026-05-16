@@ -17,7 +17,7 @@ class RetrievalEngine:
         
         # Use Google Gemini Embeddings to save memory on Render
         api_key = os.getenv("GEMINI_API_KEY")
-        self.embedding_function = embedding_functions.GoogleGenerativeAIEmbeddingFunction(
+        self.embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(
             api_key=api_key,
             model_name="models/text-embedding-004"
         )
