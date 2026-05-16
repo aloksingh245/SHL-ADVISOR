@@ -6,11 +6,16 @@ from app.models.schemas import Message, ChatResponse, Recommendation
 from app.prompts.templates import SYSTEM_PROMPT, ANALYSIS_PROMPT, STATE_EXTRACTION_PROMPT, INTENT_CLASSIFICATION_PROMPT, GROUNDED_RESPONSE_PROMPT, RECOMMENDATION_PROMPT, COMPARISON_PROMPT
 from app.retrieval.engine import RetrievalEngine
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 logger = logging.getLogger(__name__)
 
 # Using 2.5-flash because the current API key is restricted to this specific model name.
 # Note: This model has a very low 20 RPD limit on this key.
-MODEL_NAME = "gemini/gemini-2.5-flash"
+MODEL_NAME = os.getenv("MODEL_NAME", "gemini/gemini-2.5-flash")
 
 class ChatAgent:
     def __init__(self, retrieval_engine: RetrievalEngine):

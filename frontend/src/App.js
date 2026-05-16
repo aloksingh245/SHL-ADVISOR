@@ -4,7 +4,7 @@ import ChatHeader from './components/ChatHeader';
 import ChatWindow from './components/ChatWindow';
 import InputArea from './components/InputArea';
 
-const API_URL = 'http://localhost:8001';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
 function App() {
   const [messages, setMessages] = useState([]);
