@@ -4,10 +4,27 @@ from pathlib import Path
 from typing import List, Dict, Any
 import chromadb
 import os
-from chromadb.utils import embedding_functions
+import litellm
+from chromadb import Documents, EmbeddingFunction, Embeddings
 from app.models.catalog import Assessment
 
 logger = logging.getLogger(__name__)
+
+class LiteLLMEmbeddingFunction(EmbeddingFunction):
+    def __init__(self, model_name="gemini/text-embedding-004"):
+        self.model_name = model_name
+
+    def __call__(self, input: Documents) -> Embeddings:
+        try:
+            # litellm uses GEMINI_API_KEY from environment
+            response = litellm.embedding(
+                model=self.model_name,
+                input=input
+            )
+            return [res['embedding'] for res in response['data']]
+        except Exception as e:
+            logger.error(f"Embedding error: {e}")
+            raise e
 
 class RetrievalEngine:
     def __init__(self, data_path: str = "data/catalog.json", db_path: str = "data/chroma_db"):
@@ -15,14 +32,10 @@ class RetrievalEngine:
         self.db_path = Path(db_path)
         self.client = chromadb.PersistentClient(path=str(self.db_path))
         
-        # Use Google Gemini Embeddings to save memory on Render
-        api_key = os.getenv("GEMINI_API_KEY")
-        self.embedding_function = embedding_functions.GoogleGenerativeAiEmbeddingFunction(
-            api_key=api_key,
-            model_name="models/text-embedding-004"
-        )
+        # Use custom LiteLLM embedding function to save memory and avoid library bugs
+        self.embedding_function = LiteLLMEmbeddingFunction()
         
-        self.collection_name = "shl_assessments_gemini" # New collection for different embedding space
+        self.collection_name = "shl_assessments_litellm" # New collection
         
         # Try to get the collection, if it doesn't exist, create and populate it
         try:
